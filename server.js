@@ -19,7 +19,7 @@ const server = new ApolloServer({
   },
 });
 
-server.listen().then(({ url, subscriptionsUrl }) => {
+server.listen({port:5000}).then(({ url, subscriptionsUrl }) => {
   console.log(`🚀 Server ready at ${url}`);
   console.log(`🚀 Susbscription ready at ${subscriptionsUrl}`);
 
