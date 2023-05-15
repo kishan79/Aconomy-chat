@@ -27,17 +27,10 @@ module.exports = `#graphql
   }
   type Query {
     getUsers: [User]!
-    login(wallet_address: String!, password: String!): User!
     getMessages(from: String!): [Message]!
     
   }
   type Mutation {
-    register(
-      wallet_address: String!
-      email: String!
-      password: String!
-      confirmPassword: String!
-    ): User!
     sendMessage(to: String!, content: String!): Message!
     getAuthSignatureMessage(wallet_address: String!): Signature!
     doEthereumAuth(wallet_address: String!, signature: String!): Token!

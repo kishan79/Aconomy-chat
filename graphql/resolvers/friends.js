@@ -1,6 +1,4 @@
-const bcrypt = require("bcryptjs");
 const { UserInputError, AuthenticationError } = require("apollo-server");
-const jwt = require("jsonwebtoken");
 const FriendModel = require("../../models/Friend");
 
 module.exports = {
@@ -10,10 +8,6 @@ module.exports = {
       const { wallet_address } = args;
       try {
         if (!user) throw new AuthenticationError("Unauthenticated");
-
-        // const result = await Friend.findOne({
-        //   where: { address: user.wallet_address, wallet_address },
-        // });
 
         const result = await FriendModel.findOne({
           address: user.wallet_address,
