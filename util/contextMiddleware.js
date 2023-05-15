@@ -13,11 +13,11 @@ module.exports = (context) => {
     token = context.connection.context.Authorization.split('Bearer ')[1]
   }
 
-  // if (token) {
-  //   jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-  //     context.user = decodedToken
-  //   })
-  // }
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+      context.user = decodedToken
+    })
+  }
 
   context.pubsub = pubsub
 

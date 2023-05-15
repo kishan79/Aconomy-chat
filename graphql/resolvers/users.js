@@ -1,8 +1,8 @@
-// const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const { UserInputError, AuthenticationError } = require("apollo-server");
-// const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-// const { ethers } = require("ethers");
+const { ethers } = require("ethers");
 const MessageModel = require("../../models/Message");
 const UserModel = require("../../models/User");
 const FriendModel = require("../../models/Friend");
@@ -70,30 +70,30 @@ module.exports = {
         throw err;
       }
     },
-    // doEthereumAuth: async (_, args) => {
-    //   const { wallet_address, signature } = args;
-    //   try {
-    //     const user = await UserModel.findOne({
-    //       wallet_address,
-    //     });
-    //     console.log(user.signatureMessage);
-    //     if (user) {
-    //       const signerAddr = await ethers.utils.verifyMessage(
-    //         user.signatureMessage,
-    //         signature
-    //       );
-    //       console.log(signerAddr);
-    //       if (signerAddr === wallet_address) {
-    //         const token = jwt.sign({ wallet_address }, process.env.JWT_SECRET, {
-    //           expiresIn: 60 * 60,
-    //         });
-    //         return { token };
-    //       }
-    //     }
-    //   } catch (err) {
-    //     console.log(err);
-    //     throw err;
-    //   }
-    // },
+    doEthereumAuth: async (_, args) => {
+      const { wallet_address, signature } = args;
+      try {
+        const user = await UserModel.findOne({
+          wallet_address,
+        });
+        console.log(user.signatureMessage);
+        if (user) {
+          const signerAddr = await ethers.utils.verifyMessage(
+            user.signatureMessage,
+            signature
+          );
+          console.log(signerAddr);
+          if (signerAddr === wallet_address) {
+            const token = jwt.sign({ wallet_address }, process.env.JWT_SECRET, {
+              expiresIn: 60 * 60,
+            });
+            return { token };
+          }
+        }
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    },
   },
 };
