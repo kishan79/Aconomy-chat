@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Row, Button, Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { gql, useSubscription, useMutation, useLazyQuery } from "@apollo/client";
+import { gql, useSubscription, useMutation } from "@apollo/client";
 
 import { useAuthDispatch, useAuthState } from "../../context/auth";
 import { useMessageDispatch } from "../../context/message";
@@ -10,8 +10,8 @@ import Users from "./Users";
 import Messages from "./Messages";
 
 const NEW_MESSAGE = gql`
-  subscription newMessage {
-    newMessage {
+  subscription newMessage($user_wallet_address: String!) {
+    newMessage(user_wallet_address: $user_wallet_address) {
       _id
       from
       to
@@ -22,8 +22,8 @@ const NEW_MESSAGE = gql`
 `;
 
 const ADD_WALLET_USER = gql`
-  mutation addWalletUser($wallet_address: String!) {
-    addWalletUser(wallet_address: $wallet_address) {
+  mutation addWalletUser($wallet_address: String!, $user_wallet_address: String!) {
+    addWalletUser(wallet_address: $wallet_address, user_wallet_address: $user_wallet_address) {
       wallet_address
     }
   }
@@ -38,7 +38,9 @@ export default function Home({ history }) {
   const { user } = useAuthState();
 
   const { data: messageData, error: messageError } =
-    useSubscription(NEW_MESSAGE);
+    useSubscription(NEW_MESSAGE,{variables:{
+      user_wallet_address: user.wallet_address //current user address
+    }});
 
   const [addWalletUser] = useMutation(ADD_WALLET_USER, {
     onCompleted: () => {
@@ -66,20 +68,16 @@ export default function Home({ history }) {
     }
   }, [messageError, messageData]);
 
-  const logout = () => {
-    authDispatch({ type: "LOGOUT" });
-    window.location.href = "/login";
-  };
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const handleNewChat = () => {
     addWalletUser({variables: {
-      wallet_address: address
+      wallet_address: address, //friend wallet address
+      user_wallet_address: user.wallet_address //current user address
     }})
-    // handleClose();
-    // window.location.href = "/";
+    handleClose();
+    window.location.href = "/";
   };
   
   return (
@@ -103,9 +101,9 @@ export default function Home({ history }) {
         <Button variant="link" onClick={handleShow}>
           Add Friend
         </Button>
-        <Button variant="link" onClick={logout}>
+        {/* <Button variant="link" onClick={logout}>
           Logout
-        </Button>
+        </Button> */}
       </Row>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

@@ -2,13 +2,14 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
 import { Col, Form } from 'react-bootstrap'
 
+import { useAuthState } from "../../context/auth";
 import { useMessageDispatch, useMessageState } from '../../context/message'
 
 import Message from './Message'
 
 const SEND_MESSAGE = gql`
-  mutation sendMessage($to: String!, $content: String!) {
-    sendMessage(to: $to, content: $content) {
+  mutation sendMessage($to: String!, $content: String!, $user_wallet_address: String!) {
+    sendMessage(to: $to, content: $content, user_wallet_address: $user_wallet_address) {
       _id
       from
       to
@@ -19,8 +20,8 @@ const SEND_MESSAGE = gql`
 `
 
 const GET_MESSAGES = gql`
-  query getMessages($from: String!) {
-    getMessages(from: $from) {
+  query getMessages($from: String!, $user_wallet_address: String!) {
+    getMessages(from: $from, user_wallet_address: $user_wallet_address) {
       _id
       from
       to
@@ -38,6 +39,8 @@ export default function Messages() {
   const selectedUser = users?.find((u) => u.selected === true)
   const messages = selectedUser?.messages
 
+  const { user } = useAuthState();
+
   const [
     getMessages,
     { loading: messagesLoading, data: messagesData },
@@ -49,7 +52,7 @@ export default function Messages() {
 
   useEffect(() => {
     if (selectedUser && !selectedUser.messages) {
-      getMessages({ variables: { from: selectedUser.wallet_address } })
+      getMessages({ variables: { from: selectedUser.wallet_address, user_wallet_address: user.wallet_address } })
     }
   }, [selectedUser])
 
@@ -73,7 +76,7 @@ export default function Messages() {
     setContent('')
 
     // mutation for sending the message
-    sendMessage({ variables: { to: selectedUser.wallet_address, content } })
+    sendMessage({ variables: { to: selectedUser.wallet_address, content, user_wallet_address: user.wallet_address } })
   }
 
   let selectedChatMarkup

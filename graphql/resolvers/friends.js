@@ -5,12 +5,12 @@ module.exports = {
   Query: {},
   Mutation: {
     addWalletUser: async (_, args, { user }) => {
-      const { wallet_address } = args;
+      const { wallet_address, user_wallet_address } = args;
       try {
-        if (!user) throw new AuthenticationError("Unauthenticated");
+        // if (!user) throw new AuthenticationError("Unauthenticated");
 
         const result = await FriendModel.findOne({
-          address: user.wallet_address,
+          address: user_wallet_address,
           wallet_address,
         });
 
@@ -18,12 +18,12 @@ module.exports = {
 
         await FriendModel.insertMany([
           {
-            address: user.wallet_address,
+            address: user_wallet_address,
             wallet_address,
           },
           {
             address: wallet_address,
-            wallet_address: user.wallet_address,
+            wallet_address: user_wallet_address,
           },
         ]);
 

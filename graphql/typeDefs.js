@@ -1,5 +1,3 @@
-// const { gql } = require('@apollo/server')
-
 module.exports = `#graphql
   type User {
     wallet_address: String!
@@ -26,17 +24,16 @@ module.exports = `#graphql
     wallet_address: String!
   }
   type Query {
-    getUsers: [User]!
-    getMessages(from: String!): [Message]!
+    getUsers(user_wallet_address: String!): [User]!
+    getMessages(from: String!, user_wallet_address: String!): [Message]!
     
   }
   type Mutation {
-    sendMessage(to: String!, content: String!): Message!
-    getAuthSignatureMessage(wallet_address: String!): Signature!
-    doEthereumAuth(wallet_address: String!, signature: String!): Token!
-    addWalletUser(wallet_address: String!): Wallet!
+    sendMessage(to: String!, content: String!, user_wallet_address: String!): Message!
+    getAuthSignatureMessage(wallet_address: String!): Wallet!
+    addWalletUser(wallet_address: String!, user_wallet_address: String!): Wallet!
   }
   type Subscription {
-    newMessage: Message!
+    newMessage(user_wallet_address: String!): Message!
   }
 `

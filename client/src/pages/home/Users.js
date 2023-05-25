@@ -3,11 +3,12 @@ import { gql, useQuery } from "@apollo/client";
 import { Col, Image } from "react-bootstrap";
 import classNames from "classnames";
 
+import { useAuthState } from "../../context/auth";
 import { useMessageDispatch, useMessageState } from "../../context/message";
 
 const GET_USERS = gql`
-  query getUsers {
-    getUsers {
+  query getUsers($user_wallet_address: String!) {
+    getUsers(user_wallet_address: $user_wallet_address) {
       wallet_address
       createdAt
       imageUrl
@@ -27,7 +28,12 @@ export default function Users(props) {
   const { users } = useMessageState();
   const selectedUser = users?.find((u) => u.selected === true)?.wallet_address;
 
+  const { user } = useAuthState();
+
   const { loading } = useQuery(GET_USERS, {
+    variables: {
+      user_wallet_address: user.wallet_address //current user address
+    },
     onCompleted: (data) => {
       dispatch({ type: "SET_USERS", payload: data.getUsers });
     },

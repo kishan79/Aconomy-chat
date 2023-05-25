@@ -9,11 +9,11 @@ const MessageModel = require("../../models/Message");
 
 module.exports = {
   Query: {
-    getMessages: async (parent, { from }, { user }) => {
+    getMessages: async (parent, { from, user_wallet_address }, { user }) => {
       try {
-        if (!user) throw new AuthenticationError("Unauthenticated");
+        // if (!user) throw new AuthenticationError("Unauthenticated");
 
-        const walletAddresses = [user.wallet_address, from];
+        const walletAddresses = [user_wallet_address, from];
 
         const messages = await MessageModel.find({
           from: { $in: walletAddresses },
@@ -28,9 +28,9 @@ module.exports = {
     },
   },
   Mutation: {
-    sendMessage: async (parent, { to, content }, { user, pubsub }) => {
+    sendMessage: async (parent, { to, content, user_wallet_address }, { user, pubsub }) => {
       try {
-        if (!user) throw new AuthenticationError("Unauthenticated");
+        // if (!user) throw new AuthenticationError("Unauthenticated");
 
         // const recipient = await User.findOne({ where: { wallet_address: to } });
 
@@ -40,7 +40,7 @@ module.exports = {
         //   throw new UserInputError("You cant message yourself");
         // }
 
-        if (to === user.wallet_address) {
+        if (to === user_wallet_address) {
           throw new UserInputError("You cant message yourself");
         }
 
@@ -49,7 +49,7 @@ module.exports = {
         }
 
         const message = await MessageModel.create({
-          from: user.wallet_address,
+          from: user_wallet_address,
           to,
           content,
         });
@@ -67,13 +67,13 @@ module.exports = {
     newMessage: {
       subscribe: withFilter(
         (_, __, { pubsub, user }) => {
-          if (!user) throw new AuthenticationError("Unauthenticated");
+          // if (!user) throw new AuthenticationError("Unauthenticated");
           return pubsub.asyncIterator(["NEW_MESSAGE"]);
         },
-        ({ newMessage }, _, { user }) => {
+        ({ newMessage }, {user_wallet_address}, { user }) => {
           if (
-            newMessage.from === user.wallet_address ||
-            newMessage.to === user.wallet_address
+            newMessage.from === user_wallet_address ||
+            newMessage.to === user_wallet_address
           ) {
             return true;
           }

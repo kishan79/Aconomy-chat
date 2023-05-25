@@ -1,28 +1,23 @@
-const bcrypt = require("bcryptjs");
 const { UserInputError, AuthenticationError } = require("apollo-server");
-const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const { ethers } = require("ethers");
 const MessageModel = require("../../models/Message");
 const UserModel = require("../../models/User");
 const FriendModel = require("../../models/Friend");
 
-// const { JWT_SECRET } = require("../../config/env.json");
-
 module.exports = {
   Query: {
-    getUsers: async (_, __, { user }) => {
+    getUsers: async (_, {user_wallet_address}, { user }) => {
       try {
-        if (!user) throw new AuthenticationError("Unauthenticated");
+        // if (!user) throw new AuthenticationError("Unauthenticated");
 
         let users = await FriendModel.find({
-          address: user.wallet_address,
-          wallet_address: { $ne: user.wallet_address },
+          address: user_wallet_address,
+          wallet_address: { $ne: user_wallet_address },
         }).select("wallet_address address createdAt");
         console.log(users);
 
         const allUserMessages = await MessageModel.find({
-          $or: [{ from: user.wallet_address }, { to: user.wallet_address }],
+          $or: [{ from: user_wallet_address }, { to: user_wallet_address }],
         }).sort({ createdAt: -1 });
 
         users = users.map((otherUser) => {
@@ -64,32 +59,7 @@ module.exports = {
           );
         }
 
-        return { signatureMessage };
-      } catch (err) {
-        console.log(err);
-        throw err;
-      }
-    },
-    doEthereumAuth: async (_, args) => {
-      const { wallet_address, signature } = args;
-      try {
-        const user = await UserModel.findOne({
-          wallet_address,
-        });
-        console.log(user.signatureMessage);
-        if (user) {
-          const signerAddr = await ethers.utils.verifyMessage(
-            user.signatureMessage,
-            signature
-          );
-          console.log(signerAddr);
-          if (signerAddr === wallet_address) {
-            const token = jwt.sign({ wallet_address }, process.env.JWT_SECRET, {
-              expiresIn: 60 * 60,
-            });
-            return { token };
-          }
-        }
+        return { wallet_address };
       } catch (err) {
         console.log(err);
         throw err;

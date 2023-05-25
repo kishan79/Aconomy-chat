@@ -13,42 +13,26 @@ import { getMainDefinition } from "@apollo/client/utilities";
 
 let httpLink = createHttpLink({
   // uri: "https://pandora-chat.onrender.com",
-  uri: "http://localhost:4000",
+  // uri: "http://localhost:5002",
+  uri: "http://3.145.157.17:8080",
 });
 
 const authLink = setContext((_, { headers }) => {
-  // // get the authentication token from local storage if it exists
-  const token = localStorage.getItem("token");
-  // return the headers to the context so httpLink can read them
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : "",
     },
   };
 });
 
 httpLink = authLink.concat(httpLink);
 
-// const wsLink = new GraphQLWsLink(
-//   createClient({
-//     url: "ws://localhost:4000/graphql",
-//     connectionParams: () => {
-//       return {
-//         Authorization: `Bearer ${localStorage.getItem("token")}`,
-//       };
-//     },
-//   })
-// );
-
 const wsLink = new WebSocketLink({
   // uri: `wss://pandora-chat.onrender.com/graphql`,
-  uri: `ws://localhost:4000/graphql`,
+  // uri: `ws://localhost:5002/graphql`,
+  uri: `ws://3.145.157.17:8080/graphql`,
   options: {
     reconnect: true,
-    connectionParams: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
   },
 })
 
@@ -72,74 +56,3 @@ const client = new ApolloClient({
 export default function ApolloProvider(props) {
   return <Provider client={client} {...props} />;
 }
-
-// import React from 'react'
-// import {
-//   ApolloClient,
-//   InMemoryCache,
-//   ApolloProvider as Provider,
-//   createHttpLink,
-//   split,
-//   HttpLink
-// } from '@apollo/client'
-// import { setContext } from '@apollo/client/link/context'
-// import { WebSocketLink } from '@apollo/client/link/ws'
-// import { getMainDefinition } from '@apollo/client/utilities';
-// // import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-// // import { createClient } from 'graphql-ws';
-
-// let httpLink = createHttpLink({
-//   uri: 'http://localhost:4000',
-// })
-
-// const authLink = setContext((_, { headers }) => {
-//   // // get the authentication token from local storage if it exists
-//   const token = localStorage.getItem('token')
-//   // return the headers to the context so httpLink can read them
-//   return {
-//     headers: {
-//       ...headers,
-//       authorization: token ? `Bearer ${token}` : '',
-//     },
-//   }
-// })
-
-// httpLink = authLink.concat(httpLink)
-
-// // const wsLink = new GraphQLWsLink(createClient({
-// //   url: 'ws://localhost:4000/graphql',
-// //   connectionParams: {
-// //     authToken: `Bearer ${localStorage.getItem('token')}`,
-// //   },
-// // }));
-
-// const wsLink = new WebSocketLink({
-//   uri: `ws://localhost:4000/graphql`,
-//   options: {
-//     reconnect: true,
-//     connectionParams: {
-//       Authorization: `Bearer ${localStorage.getItem('token')}`,
-//     },
-//   },
-// })
-
-// const splitLink = split(
-//   ({ query }) => {
-//     const definition = getMainDefinition(query);
-//     return (
-//       definition.kind === 'OperationDefinition' &&
-//       definition.operation === 'subscription'
-//     );
-//   },
-//   wsLink,
-//   httpLink,
-// );
-
-// const client = new ApolloClient({
-//   link: splitLink,
-//   cache: new InMemoryCache(),
-// })
-
-// export default function ApolloProvider(props) {
-//   return <Provider client={client} {...props} />
-// }
