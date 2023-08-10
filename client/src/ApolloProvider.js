@@ -13,8 +13,8 @@ import { getMainDefinition } from "@apollo/client/utilities";
 
 let httpLink = createHttpLink({
   // uri: "https://pandora-chat.onrender.com",
-  uri: "http://localhost:8080",
-  // uri: "http://3.145.157.17:8080",
+  // uri: "http://localhost:8080",
+  uri: "http://3.145.157.17:8080",
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -29,8 +29,8 @@ httpLink = authLink.concat(httpLink);
 
 const wsLink = new WebSocketLink({
   // uri: `wss://pandora-chat.onrender.com/graphql`,
-  uri: `ws://localhost:8080/graphql`,
-  // uri: `ws://3.145.157.17:8080/graphql`,
+  // uri: `ws://localhost:8080/graphql`,
+  uri: `ws://3.145.157.17:8080/graphql`,
   options: {
     reconnect: true,
   },

@@ -65,7 +65,7 @@ export default function Home({ history }) {
   const [addWalletUser] = useMutation(ADD_WALLET_USER, {
     onCompleted: () => {
       handleClose();
-      // window.location.href = "/";
+      window.location.href = "/";
     },
     onError: (err) => console.log(err),
   });
@@ -118,7 +118,7 @@ export default function Home({ history }) {
       },
     });
     handleClose();
-    // window.location.href = "/";
+    window.location.href = "/";
   };
 
   return (
@@ -142,9 +142,6 @@ export default function Home({ history }) {
         <Button variant="link" onClick={handleShow}>
           Add Friend
         </Button>
-        {/* <Button variant="link" onClick={handleCheckAddress}>
-          Check User
-        </Button> */}
         {/* <Button variant="link" onClick={logout}>
           Logout
         </Button> */}
