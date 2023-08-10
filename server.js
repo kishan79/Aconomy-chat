@@ -1,7 +1,5 @@
 const { ApolloServer } = require("apollo-server");
 
-// const { sequelize } = require("./models");
-
 const resolvers = require("./graphql/resolvers");
 const typeDefs = require("./graphql/typeDefs");
 const contextMiddleware = require("./util/contextMiddleware");
@@ -24,9 +22,4 @@ server.listen({port:8080}).then(({ url, subscriptionsUrl }) => {
   console.log(`🚀 Susbscription ready at ${subscriptionsUrl}`);
 
   connectDB();
-
-  // sequelize
-  //   .authenticate()
-  //   .then(() => console.log("Database connected!!"))
-  //   .catch((err) => console.log(err));
 });

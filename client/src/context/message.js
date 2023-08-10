@@ -34,6 +34,7 @@ const messageReducer = (state, action) => {
         users: usersCopy,
       }
     case 'ADD_MESSAGE':
+      console.log("12", state.users);
       usersCopy = [...state.users]
 
       userIndex = usersCopy.findIndex((u) => u.wallet_address === wallet_address)

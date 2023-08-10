@@ -11,13 +11,18 @@ const GET_USERS = gql`
     getUsers(user_wallet_address: $user_wallet_address) {
       wallet_address
       createdAt
-      imageUrl
       latestMessage {
         _id
         from
         to
         content
         createdAt
+      }
+      wallet_addressUser {
+        _id
+        name
+        username
+        profileImage
       }
     }
   }
@@ -67,13 +72,13 @@ export default function Users(props) {
         >
           <Image
             src={
-              user.imageUrl ||
+              user.wallet_addressUser.profileImage ||
               "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
             }
             className="user-image"
           />
           <div className="d-none d-md-block ml-2">
-            <p className="text-success">{user.wallet_address}</p>
+            <p className="text-success">{user.wallet_addressUser.name}</p>
             <p className="font-weight-light">
               {user.latestMessage
                 ? user.latestMessage.content

@@ -4,8 +4,14 @@ module.exports = `#graphql
     email: String
     createdAt: String!
     token: String
-    imageUrl: String
     latestMessage: Message
+    wallet_addressUser: addressUser
+  }
+  type addressUser {
+    _id: String!
+    name: String
+    username: String
+    profileImage: String
   }
   type Message {
     _id: String!
@@ -23,6 +29,10 @@ module.exports = `#graphql
   type Wallet{
     wallet_address: String!
   }
+  type Msg{
+    message: String!
+    success: Boolean!
+  }
   type Query {
     getUsers(user_wallet_address: String!): [User]!
     getMessages(from: String!, user_wallet_address: String!): [Message]!
@@ -32,6 +42,7 @@ module.exports = `#graphql
     sendMessage(to: String!, content: String!, user_wallet_address: String!): Message!
     getAuthSignatureMessage(wallet_address: String!): Wallet!
     addWalletUser(wallet_address: String!, user_wallet_address: String!): Wallet!
+    checkAddress(wallet_address: String!): Msg!
   }
   type Subscription {
     newMessage(user_wallet_address: String!): Message!

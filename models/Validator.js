@@ -1,38 +1,45 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema(
+const ValidatorSchema = new mongoose.Schema(
   {
     wallet_address: {
       type: String,
     },
+    profileImage: String,
+    bannerImage: String,
     name: String,
     username: String,
-    email: {
-      type: String,
-    },
     bio: String,
+    assetType: [String],
+    email: String,
     role: {
       type: String,
-      // default: "user",
+      default: "validator",
+    },
+    whitelisted: {
+      type: Boolean,
+      default: false,
     },
     applicantId: String,
     signatureMessage: {
       type: String,
     },
+    address: {
+      country: String,
+      area: String,
+    },
+    document: [
+      {
+        name: String,
+        link: String,
+      },
+    ],
     socialLinks: {
       website: String,
       twitter: String,
       discord: String,
-      telegram: String,
-      instagram: String,
-      other: String,
+      linkedin: String,
     },
-    termOfService: {
-      type: Boolean,
-      // default: false
-    },
-    profileImage: String,
-    bannerImage: String,
     favouriteNFT: [{ type: mongoose.Schema.ObjectId, ref: "Nft" }],
     applicantType: String,
     reviewResult: {},
@@ -44,4 +51,4 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("Validator", ValidatorSchema);
