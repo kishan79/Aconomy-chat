@@ -20,10 +20,14 @@ module.exports = {
           .lean();
         let data1 = !!user1 ? user1 : validator1;
 
-        let user2 = await UserModel.findOne({ user_wallet_address })
+        let user2 = await UserModel.findOne({
+          wallet_address: user_wallet_address,
+        })
           .select("_id role")
           .lean();
-        let validator2 = await ValidatorModel.findOne({ user_wallet_address })
+        let validator2 = await ValidatorModel.findOne({
+          wallet_address: user_wallet_address,
+        })
           .select("_id role")
           .lean();
         let data2 = !!user2 ? user2 : validator2;

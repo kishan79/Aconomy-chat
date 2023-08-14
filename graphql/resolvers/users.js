@@ -50,32 +50,32 @@ module.exports = {
     },
   },
   Mutation: {
-    // getAuthSignatureMessage: async (_, args) => {
-    //   const { wallet_address } = args;
-    //   try {
-    //     const user = await UserModel.findOne({ wallet_address });
+    getAuthSignatureMessage: async (_, args) => {
+      const { wallet_address } = args;
+      try {
+        const user = await UserModel.findOne({ wallet_address });
 
-    //     const signatureMessage = `I want to login to Pandora messenger ${crypto
-    //       .randomBytes(64)
-    //       .toString("hex")}`;
+        const signatureMessage = `I want to login to Pandora messenger ${crypto
+          .randomBytes(64)
+          .toString("hex")}`;
 
-    //     if (!user) {
-    //       await UserModel.create({
-    //         wallet_address,
-    //         signatureMessage,
-    //       });
-    //     } else {
-    //       await UserModel.findOneAndUpdate(
-    //         { wallet_address },
-    //         { signatureMessage }
-    //       );
-    //     }
+        if (!user) {
+          await UserModel.create({
+            wallet_address,
+            signatureMessage,
+          });
+        } else {
+          await UserModel.findOneAndUpdate(
+            { wallet_address },
+            { signatureMessage }
+          );
+        }
 
-    //     return { wallet_address };
-    //   } catch (err) {
-    //     console.log(err);
-    //     throw err;
-    //   }
-    // },
+        return { wallet_address };
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    },
   },
 };
