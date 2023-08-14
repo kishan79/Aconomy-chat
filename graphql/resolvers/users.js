@@ -13,7 +13,7 @@ module.exports = {
         let users = await FriendModel.find({
           address: user_wallet_address,
           wallet_address: { $ne: user_wallet_address },
-        })
+        }).sort({ createdAt: -1 })
           .select(
             "wallet_address address createdAt wallet_addressUser wallet_addressUserType addressUser addressUserType"
           )
