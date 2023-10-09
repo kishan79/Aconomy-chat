@@ -12,10 +12,14 @@ module.exports = {
       try {
         // if (!user) throw new AuthenticationError("Unauthenticated");
 
-        let user1 = await UserModel.findOne({ wallet_address })
+        let user1 = await UserModel.findOne({
+          $or: [{ wallet_address }, { username: wallet_address }],
+        })
           .select("_id role")
           .lean();
-        let validator1 = await ValidatorModel.findOne({ wallet_address })
+        let validator1 = await ValidatorModel.findOne({
+          $or: [{ wallet_address }, { username: wallet_address }],
+        })
           .select("_id role")
           .lean();
         let data1 = !!user1 ? user1 : validator1;
@@ -66,8 +70,14 @@ module.exports = {
     },
     checkAddress: async (_, { wallet_address }, { user }) => {
       try {
-        let User = await UserModel.find({ wallet_address });
-        let Validator = await ValidatorModel.find({ wallet_address });
+        // let User = await UserModel.find({ wallet_address });
+        let User = await UserModel.find({
+          $or: [{ wallet_address }, { username: wallet_address }],
+        });
+        // let Validator = await ValidatorModel.find({ wallet_address });
+        let Validator = await ValidatorModel.find({
+          $or: [{ wallet_address }, { username: wallet_address }],
+        });
         if (User.length || Validator.length) {
           return { success: true, message: "User exists" };
         } else {
