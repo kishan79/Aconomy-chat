@@ -15,12 +15,12 @@ module.exports = {
         let user1 = await UserModel.findOne({
           $or: [{ wallet_address }, { username: wallet_address }],
         })
-          .select("_id role")
+          .select("_id role wallet_address")
           .lean();
         let validator1 = await ValidatorModel.findOne({
           $or: [{ wallet_address }, { username: wallet_address }],
         })
-          .select("_id role")
+          .select("_id role wallet_address")
           .lean();
         let data1 = !!user1 ? user1 : validator1;
 
@@ -38,7 +38,7 @@ module.exports = {
 
         const result = await FriendModel.findOne({
           address: user_wallet_address,
-          wallet_address,
+          wallet_address: data1.wallet_address,
         });
 
         if (result) throw new UserInputError("User already added");
@@ -48,12 +48,12 @@ module.exports = {
             address: user_wallet_address,
             addressUser: data2._id,
             addressUserType: Role[data2.role],
-            wallet_address,
+            wallet_address: data1.wallet_address,
             wallet_addressUser: data1._id,
             wallet_addressUserType: Role[data1.role],
           },
           {
-            address: wallet_address,
+            address: data1.wallet_address,
             addressUser: data1._id,
             addressUserType: Role[data1.role],
             wallet_address: user_wallet_address,
@@ -62,7 +62,7 @@ module.exports = {
           },
         ]);
 
-        return { wallet_address };
+        return { wallet_address: data1.wallet_address };
       } catch (err) {
         console.log(err);
         throw err;
