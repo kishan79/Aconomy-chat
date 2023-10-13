@@ -20,11 +20,11 @@ module.exports = {
           .populate([
             {
               path: "addressUser",
-              select: "_id name username profileImage",
+              select: "_id name username profileImage role",
             },
             {
               path: "wallet_addressUser",
-              select: "_id name username profileImage",
+              select: "_id name username profileImage role",
             },
           ]);
 
