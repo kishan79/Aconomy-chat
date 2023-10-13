@@ -12,6 +12,7 @@ module.exports = `#graphql
     name: String
     username: String
     profileImage: String
+    role: String
   }
   type Message {
     _id: String!
