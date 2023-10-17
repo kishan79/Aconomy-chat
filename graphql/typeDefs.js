@@ -34,8 +34,16 @@ module.exports = `#graphql
     message: String!
     success: Boolean!
   }
+  type SearchUser {
+    name: String!
+    username: String!
+    role: String!
+    wallet_address: String!
+    profileImage: String
+  }
   type Query {
     getUsers(user_wallet_address: String!): [User]!
+    getSearchUsers(param: String!): [SearchUser]
     getMessages(from: String!, user_wallet_address: String!): [Message]!
     
   }

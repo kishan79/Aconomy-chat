@@ -2,6 +2,7 @@ const { UserInputError, AuthenticationError } = require("apollo-server");
 const crypto = require("crypto");
 const MessageModel = require("../../models/Message");
 const UserModel = require("../../models/User");
+const ValidatorModel = require("../../models/Validator");
 const FriendModel = require("../../models/Friend");
 
 module.exports = {
@@ -13,7 +14,8 @@ module.exports = {
         let users = await FriendModel.find({
           address: user_wallet_address,
           wallet_address: { $ne: user_wallet_address },
-        }).sort({ createdAt: -1 })
+        })
+          .sort({ createdAt: -1 })
           .select(
             "wallet_address address createdAt wallet_addressUser wallet_addressUserType addressUser addressUserType"
           )
@@ -41,8 +43,50 @@ module.exports = {
           otherUser.latestMessage = latestMessage;
           return otherUser;
         });
-        
+
         return users;
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    },
+    getSearchUsers: async (_, { param }, { user }) => {
+      try {
+        // if (!user) throw new AuthenticationError("Unauthenticated");
+
+        if (param !== "") {
+          let users = await UserModel.find({
+            $and: [
+              {
+                $or: [
+                  { name: { $regex: param, $options: "i" } },
+                  { username: { $regex: param, $options: "i" } },
+                  { wallet_address: param },
+                ],
+              },
+              { role: { $ne: "admin" } },
+              { username: { $ne: "" } },
+            ],
+          }).select(
+            "name username role wallet_address profileImage kycEventType"
+          );
+
+          let validators = await ValidatorModel.find({
+            $or: [
+              { name: { $regex: param, $options: "i" } },
+              { username: { $regex: param, $options: "i" } },
+              { wallet_address: param },
+            ],
+          }).select(
+            "name username role wallet_address profileImage kybEventType"
+          );
+
+          let allUsers = [...validators, ...users];
+
+          return allUsers;
+        } else {
+          return [];
+        }
       } catch (err) {
         console.log(err);
         throw err;
