@@ -6,7 +6,6 @@ const {
 const { withFilter } = require("graphql-subscriptions");
 const MessageModel = require("../../models/Message");
 
-
 module.exports = {
   Query: {
     getMessages: async (parent, { from, user_wallet_address }, { user }) => {
@@ -28,7 +27,11 @@ module.exports = {
     },
   },
   Mutation: {
-    sendMessage: async (parent, { to, content, user_wallet_address }, { user, pubsub }) => {
+    sendMessage: async (
+      parent,
+      { to, content, user_wallet_address },
+      { user, pubsub }
+    ) => {
       try {
         // if (!user) throw new AuthenticationError("Unauthenticated");
 
@@ -62,6 +65,34 @@ module.exports = {
         throw err;
       }
     },
+    readMessage: async (
+      parent,
+      { wallet_address, user_wallet_address },
+      { user, pubsub }
+    ) => {
+      try {
+        // if (!user) throw new AuthenticationError("Unauthenticated");
+
+        const message = await MessageModel.updateMany(
+          {
+            from: user_wallet_address,
+            to: wallet_address,
+          },
+          {
+            read: true,
+          }
+        );
+
+        if (message) {
+          return { readMessage: true };
+        } else {
+          return { readMessage: false };
+        }
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
+    },
   },
   Subscription: {
     newMessage: {
@@ -70,7 +101,7 @@ module.exports = {
           // if (!user) throw new AuthenticationError("Unauthenticated");
           return pubsub.asyncIterator(["NEW_MESSAGE"]);
         },
-        ({ newMessage }, {user_wallet_address}, { user }) => {
+        ({ newMessage }, { user_wallet_address }, { user }) => {
           if (
             newMessage.from === user_wallet_address ||
             newMessage.to === user_wallet_address

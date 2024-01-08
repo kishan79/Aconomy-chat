@@ -115,7 +115,12 @@ module.exports = {
         //   );
         // }
 
-        return { wallet_address };
+        const unreadMessages = await MessageModel.find({
+          to: wallet_address,
+          read: false
+        }).select("_id");
+
+        return { wallet_address, newMessages: !!unreadMessages.length };
       } catch (err) {
         console.log(err);
         throw err;

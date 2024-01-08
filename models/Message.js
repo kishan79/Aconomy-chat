@@ -11,6 +11,10 @@ const MessageSchema = new mongoose.Schema(
     to: {
       type: String,
     },
+    read: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

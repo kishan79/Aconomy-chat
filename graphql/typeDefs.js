@@ -19,6 +19,7 @@ module.exports = `#graphql
     content: String!
     from: String!
     to: String!
+    read: Boolean!
     createdAt: String!
   }
   type Signature {
@@ -29,7 +30,14 @@ module.exports = `#graphql
   }
   type Wallet{
     wallet_address: String!
+  },
+  type WalletMessage{
+    wallet_address: String!
+    newMessages: Boolean!
   }
+  type ReadMessage{
+    readMessage: Boolean!
+  } 
   type Msg{
     message: String!
     success: Boolean!
@@ -49,7 +57,8 @@ module.exports = `#graphql
   }
   type Mutation {
     sendMessage(to: String!, content: String!, user_wallet_address: String!): Message!
-    getAuthSignatureMessage(wallet_address: String!): Wallet!
+    readMessage(wallet_address: String!, user_wallet_address: String!): ReadMessage!
+    getAuthSignatureMessage(wallet_address: String!): WalletMessage!
     addWalletUser(wallet_address: String!, user_wallet_address: String!): Wallet!
     checkAddress(wallet_address: String!): Msg!
   }
