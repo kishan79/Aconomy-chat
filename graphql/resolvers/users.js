@@ -44,6 +44,22 @@ module.exports = {
           return otherUser;
         });
 
+        users.sort((a, b) => {
+          if (a.latestMessage === undefined) {
+            return 1;
+          }
+
+          if (b.latestMessage === undefined) {
+            return -1;
+          }
+
+          if (a.latestMessage.createdAt === b.latestMessage.createdAt) {
+            return 0;
+          }
+
+          return a.latestMessage.createdAt > b.latestMessage.createdAt ? -1 : 1;
+        });
+
         return users;
       } catch (err) {
         console.log(err);
@@ -117,7 +133,7 @@ module.exports = {
 
         const unreadMessages = await MessageModel.find({
           to: wallet_address,
-          read: false
+          read: false,
         }).select("_id");
 
         return { wallet_address, newMessages: !!unreadMessages.length };
